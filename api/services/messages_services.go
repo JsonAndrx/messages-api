@@ -4,6 +4,7 @@ import (
 	"api-messages/api/repository"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 )
@@ -22,6 +23,7 @@ type WriterMessageServices interface {
 
 type repositoryMessage interface {
 	repository.WriterMessageRepository
+	repository.GetterMessageRepository
 }
 
 type ServiceMessageImpl struct {
@@ -35,7 +37,13 @@ func NewServicesImpl(repo repositoryMessage) *ServiceMessageImpl {
 }
 
 func (g *ServiceMessageImpl) GetMessage() ([]byte, error) {
-	responseMessage, err := json.Marshal("Sucess")
+	dataMsg, err := g.repo.GetMessages()
+	if err != nil {
+		fmt.Println(err)
+		return nil, errors.New("failed to get messages")
+	}
+	
+	responseMessage, err := json.Marshal(dataMsg)
 	if err != nil {
 		return nil, errors.New("failed to enconded json response")
 	}

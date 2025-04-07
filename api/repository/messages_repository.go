@@ -4,8 +4,16 @@ import (
 	"database/sql"
 )
 
+type MessagesData struct {
+	Content string `db:"content" json:"message"`
+}
+
 type WriterMessageRepository interface {
 	CreateMessage(content string) (bool, error)
+}
+
+type GetterMessageRepository interface {
+	GetMessages() ([]MessagesData, error)
 }
 
 type MessageRepoImpl struct {
@@ -26,3 +34,23 @@ func (r *MessageRepoImpl) CreateMessage(content string) (bool, error) {
 
 	return true, nil
 }
+
+func (r *MessageRepoImpl) GetMessages() ([]MessagesData, error) {
+	var messages []MessagesData
+	rows, err := r.db.Query("SELECT s.content FROM messages as s")
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var message MessagesData
+		err = rows.Scan(&message.Content)
+		if err != nil {
+			return nil, err
+		}
+
+		messages = append(messages, message)
+	}
+
+	return messages, nil
+} 
