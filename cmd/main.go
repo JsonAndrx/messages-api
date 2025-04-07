@@ -5,11 +5,19 @@ import (
 
 	"net/http"
 
+	"api-messages/internal"
+
 	"github.com/rs/zerolog/log"
 )
 
 func main() {
-	routes.SetupRoutes()
+	connectDb := internal.NewDbImpl()
+	db, errDb := connectDb.ConnectDb()
+	if errDb != nil {
+		log.Error().Err(errDb).Msg("An error ocurred")
+	}
+
+	routes.SetupRoutes(db)
 	errServ := http.ListenAndServe(":8080", nil)
 	if errServ != nil {
 		log.Error().Err(errServ).Msg("An error ocurred")
