@@ -38,3 +38,23 @@ func (h *HandlersManage) CreateMessage(w http.ResponseWriter, r *http.Request) {
 
 	w.Write([]byte(resMessage))
 }
+
+func (h *HandlersManage) UpdateMessage(w http.ResponseWriter, r *http.Request) {
+	updateMessageRes, err := h.ServiceMessage.UpdateMessage(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(updateMessageRes))
+}
+
+func (h *HandlersManage) DeleteMessage(w http.ResponseWriter, r *http.Request) {
+	deleteMsg, err := h.ServiceMessage.DeleteMessage(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(deleteMsg))
+}

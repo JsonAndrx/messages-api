@@ -14,4 +14,6 @@ func SetupRoutes(db *sql.DB) {
 	handlerInit := handlers.NewMessageHandler(serviceInit)
 	http.HandleFunc("POST /message", handlerInit.CreateMessage)
 	http.HandleFunc("GET /message", handlerInit.GetMessage)
+	http.HandleFunc("PUT /message", handlerInit.UpdateMessage)
+	http.HandleFunc("DELETE /message", handlerInit.DeleteMessage)
 }
